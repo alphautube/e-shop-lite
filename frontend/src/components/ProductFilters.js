@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -46,14 +46,44 @@ const BRANDS = [
   { id: 'microsoft', name: 'Microsoft' }
 ];
 
-const ProductFilters = ({ onFilterChange }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [priceRange, setPriceRange] = useState([0, 1000]);
+const ProductFilters = ({ onFilterChange, initialFilters }) => {
+  const [searchQuery, setSearchQuery] = useState(initialFilters?.searchQuery || '');
+  const [priceRange, setPriceRange] = useState(initialFilters?.priceRange || [0, 1000]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedBrands, setSelectedBrands] = useState([]);
-  const [minRating, setMinRating] = useState(0);
-  const [sort, setSort] = useState('popular');
+  const [minRating, setMinRating] = useState(initialFilters?.minRating || 0);
+  const [sort, setSort] = useState(initialFilters?.sort || 'popular');
   const [filtersApplied, setFiltersApplied] = useState(false);
+  
+  // Convert category names to IDs when initialFilters are provided
+  useEffect(() => {
+    if (initialFilters?.categories?.length > 0) {
+      const categoryIds = initialFilters.categories.map(categoryName => {
+        const category = CATEGORIES.find(cat => cat.name === categoryName);
+        return category ? category.id : null;
+      }).filter(id => id !== null);
+      setSelectedCategories(categoryIds);
+    }
+    
+    if (initialFilters?.brands?.length > 0) {
+      const brandIds = initialFilters.brands.map(brandName => {
+        const brand = BRANDS.find(b => b.name === brandName);
+        return brand ? brand.id : null;
+      }).filter(id => id !== null);
+      setSelectedBrands(brandIds);
+    }
+    
+    // Set filtersApplied based on whether any filters are active
+    const hasActiveFilters = 
+      (initialFilters?.searchQuery && initialFilters.searchQuery !== '') ||
+      (initialFilters?.priceRange && (initialFilters.priceRange[0] > 0 || initialFilters.priceRange[1] < 1000)) ||
+      (initialFilters?.categories?.length > 0) ||
+      (initialFilters?.brands?.length > 0) ||
+      (initialFilters?.minRating > 0) ||
+      (initialFilters?.sort && initialFilters.sort !== 'popular');
+    
+    setFiltersApplied(hasActiveFilters);
+  }, [initialFilters]);
   
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
@@ -321,14 +351,28 @@ const ProductFilters = ({ onFilterChange }) => {
       
       <Divider sx={{ my: 2 }} />
       
-      <Button
-        variant="contained"
-        color="primary"
-        fullWidth
-        onClick={handleApplyFilters}
-      >
-        Apply Filters
-      </Button>
+      <Box sx={{ display: 'flex', gap: 2, flexDirection: 'column' }}>
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          onClick={handleApplyFilters}
+        >
+          Apply Filters
+        </Button>
+        
+        {getActiveFilterCount() > 0 && (
+          <Button
+            variant="outlined"
+            color="primary"
+            fullWidth
+            startIcon={<Clear />}
+            onClick={handleClearFilters}
+          >
+            Reset Filters
+          </Button>
+        )}
+      </Box>
     </Paper>
   );
 };
