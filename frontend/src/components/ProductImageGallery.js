@@ -122,7 +122,8 @@ const ProductImageGallery = ({ images = [] }) => {
 
   // If no images are provided, show a placeholder
   if (!images.length) {
-    images = ['/placeholder-image.jpg'];
+    // Use a reliable fallback URL for the placeholder
+    images = ['https://placehold.co/600x400/e0e0e0/6e6e6e.png'];
   }
 
   return (

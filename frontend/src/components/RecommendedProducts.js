@@ -227,7 +227,8 @@ const RecommendedProducts = ({ userId, currentProductId, category, limit = 4 }) 
         {products.map((product) => {
           // Check if product is on sale (matching the same logic from ProductCard)
           const isOnSale = product.id % 3 === 0;
-          const discountPercent = isOnSale ? Math.floor(Math.random() * 30) + 10 : 0;
+          // Use a deterministic discount based on product ID instead of random
+          const discountPercent = isOnSale ? 10 + (product.id % 30) : 0; // Discount between 10-40% based on ID
           const salePrice = isOnSale ? (product.price * (1 - discountPercent / 100)).toFixed(2) : null;
           
           return (
@@ -285,6 +286,21 @@ const RecommendedProducts = ({ userId, currentProductId, category, limit = 4 }) 
                     placeholderHeight="100%"
                     effect="opacity"
                     threshold={200}
+                    errorPlaceholder={
+                      <img 
+                        src="https://placehold.co/600x400/e0e0e0/6e6e6e.png"
+                        alt={product.name}
+                        style={{ 
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'contain',
+                          padding: '16px'
+                        }}
+                      />
+                    }
                   />
                   
                   {/* Sale badge */}

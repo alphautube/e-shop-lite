@@ -41,9 +41,10 @@ const ProductQuickView = ({ product, open, onClose, onViewFullDetails }) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   
-  // Check if product is on sale (matching the same logic from ProductCard)
+  // Matching the sale logic from ProductCard
   const isOnSale = product ? product.id % 3 === 0 : false;
-  const discountPercent = isOnSale ? Math.floor(Math.random() * 30) + 10 : 0;
+  // Use a deterministic discount based on product ID instead of random
+  const discountPercent = isOnSale ? 10 + (product.id % 30) : 0; // Discount between 10-40% based on ID
   const salePrice = isOnSale && product ? (product.price * (1 - discountPercent / 100)).toFixed(2) : null;
 
   // Reset image loaded state when modal opens or product changes

@@ -16,19 +16,27 @@ const ProductCard = ({ product, onViewProduct }) => {
   const [addToCartClicked, setAddToCartClicked] = useState(false);
   const [quickViewOpen, setQuickViewOpen] = useState(false);
 
-  // Check if product is on sale (we'll randomly mark 30% of products on sale for demo purposes)
+  // Check if product is on sale (we'll deterministically mark 30% of products on sale)
   const isOnSale = product.id % 3 === 0; // Every 3rd product will be on sale
-  const discountPercent = isOnSale ? Math.floor(Math.random() * 30) + 10 : 0; // Random discount between 10-40%
+  
+  // Use a deterministic discount based on product ID instead of random
+  // This ensures the discount doesn't change on re-renders
+  const discountPercent = isOnSale ? 10 + (product.id % 30) : 0; // Discount between 10-40% based on ID
   const salePrice = isOnSale ? (product.price * (1 - discountPercent / 100)).toFixed(2) : null;
 
+  // Handle product image loading
   const handleImageLoad = () => {
     setImageLoading(false);
   };
-
+  
+  // Handle product image loading error
   const handleImageError = () => {
     setImageLoading(false);
     setImageError(true);
   };
+
+  // Fallback image for missing product images
+  const fallbackImageUrl = 'https://placehold.co/600x400/e0e0e0/6e6e6e.png';
 
   const handleAddToCart = (e) => {
     e.stopPropagation(); // Prevent triggering the card click
@@ -113,7 +121,17 @@ const ProductCard = ({ product, onViewProduct }) => {
             
             {imageError ? (
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', width: '100%', backgroundColor: 'rgba(0,0,0,0.05)' }}>
-                <BrokenImage fontSize="large" color="disabled" />
+                <CardMedia
+                  component="img"
+                  src={fallbackImageUrl}
+                  alt={product.name}
+                  style={{ 
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'contain',
+                    padding: '16px'
+                  }}
+                />
               </Box>
             ) : (
               <CardMedia

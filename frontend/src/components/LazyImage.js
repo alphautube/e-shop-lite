@@ -16,6 +16,9 @@ const LazyImage = ({
   const [imageSrc, setImageSrc] = useState(null);
   const [error, setError] = useState(false);
   
+  // Fallback image for errors
+  const fallbackImage = 'https://placehold.co/600x400/e0e0e0/6e6e6e.png';
+  
   useEffect(() => {
     setLoaded(false);
     setError(false);
@@ -35,6 +38,7 @@ const LazyImage = ({
       console.error(`Failed to load image: ${src}`);
       setError(true);
       setLoaded(true); // Still set loaded to true to avoid eternal loading
+      setImageSrc(fallbackImage); // Set fallback image
     };
   }, [src]);
   
@@ -88,20 +92,18 @@ const LazyImage = ({
   // Show error placeholder if image failed to load
   if (error) {
     return errorPlaceholder || (
-      <Box
-        sx={{
+      <img 
+        src={fallbackImage}
+        alt={alt || "Image not available"}
+        style={{
           height: placeholderHeight,
           width: style.width || '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+          objectFit: 'contain',
           backgroundColor: 'rgba(0, 0, 0, 0.05)',
           borderRadius: style.borderRadius || 0,
-          color: 'text.secondary'
         }}
-      >
-        <BrokenImage fontSize="large" />
-      </Box>
+        {...props}
+      />
     );
   }
 
