@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 5001;
 
 // Middleware
 app.use(cors({
-  origin: ['https://e-shop-lite-7l8ti.web.app', 'http://localhost:3000', 'https://e-shop-lite-7l8ti.firebaseapp.com']
+  origin: '*'
 }));
 app.use(express.json());
 
