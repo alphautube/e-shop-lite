@@ -1,0 +1,12 @@
+{
+  "name": "e-shop",
+  "version": "1.0.0",
+  "description": "Amazon-like e-shop with React frontend and Node.js backend",
+  "scripts": {
+    "start": "concurrently \"cd backend && npm start\" \"cd frontend && npm start\"",
+    "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install"
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+} 
