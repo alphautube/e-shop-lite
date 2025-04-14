@@ -50,6 +50,10 @@ import Wishlist from './components/Wishlist';
 import ProductFilters from './components/ProductFilters';
 import Banner from './components/Banner';
 import BackToTop from './components/BackToTop';
+import Categories from './components/Categories';
+import Deals from './components/Deals';
+import About from './components/About';
+import Contact from './components/Contact';
 import { CartProvider } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
 import { useCart } from './context/CartContext';
@@ -413,6 +417,31 @@ function AppContent() {
             onBackToShopping={handleBackToProducts}
             onViewProduct={handleViewProduct}
           />
+        )}
+        
+        {view === 'categories' && (
+          <Categories 
+            onViewCategory={(categoryId) => {
+              console.log(`Viewing category: ${categoryId}`);
+              // In a real implementation, you would filter products by category
+              setView('products');
+            }}
+            onViewProduct={handleViewProduct}
+          />
+        )}
+        
+        {view === 'deals' && (
+          <Deals 
+            onViewProduct={handleViewProduct}
+          />
+        )}
+        
+        {view === 'about' && (
+          <About />
+        )}
+        
+        {view === 'contact' && (
+          <Contact />
         )}
         
         {/* Additional views can be added here */}
